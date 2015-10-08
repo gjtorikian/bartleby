@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "babel": "5.8.3",
+    "emojis": "1.0.7",
     "js-yaml": "3.4.2",
     "liquid-node": "2.6.1",
     "lodash": "3.10.1",

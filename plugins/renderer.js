@@ -9,6 +9,7 @@ let path = require('path'),
   Liquid = require("liquid-node"),
   engine = new Liquid.Engine(),
   toc = require('toc'),
+  emojis = require('emojis'),
 
   _ = require('lodash');
 
@@ -18,7 +19,7 @@ const OPEN_INTRO = /<p>\{\{#intro\}\}<\/p>/g;
 const CLOSE_INTRO = /<p>\{\{\/intro\}\}<\/p>/g;
 
 module.exports = {
-  markdown: async function (files, metalsmith, done) {
+  markdown: async function(files, metalsmith, done) {
     debugMarkdown("Markdown");
     for (let file of Object.keys(files)) {
       await processFile(metalsmith, file);
@@ -44,12 +45,13 @@ module.exports = {
         await processFrontmatter(metalsmith, files[file], fileKey);
       }
 
-      return new Promise(function (resolve) {
+      return new Promise(function(resolve) {
         let contents = fileData.contents.toString();
         let parsed = md.render(contents);
 
         parsed = applyCustomizations(parsed);
         parsed = applyTOC(parsed);
+        parsed = applyEmoji(parsed);
 
         fileData.contents = new Buffer(parsed);
 
@@ -65,7 +67,7 @@ module.exports = {
        in Strings and Arrays
     */
     function processFrontmatter(metalsmith, fileData, fileKey) {
-      return new Promise(function (resolve) {
+      return new Promise(function(resolve) {
         if (fileKey == "contents" || fileKey == "mode" || fileKey == "stats") {
           return resolve(fileData);
         }
@@ -76,11 +78,11 @@ module.exports = {
 
         if (LIQUID_CONTENT.test(value)) {
           if (_.isArray(value)) {
-            value = _.map(value, function (el) {
+            value = _.map(value, function(el) {
               if (LIQUID_CONTENT.test(el)) {
-                el.replace(LIQUID_CONTENT, function (match) {
+                el.replace(LIQUID_CONTENT, function(match) {
                   let data_vars = conrefifier.setup_config(datafiles.data, metalsmith);
-                  conrefifier.convert(match, data_vars, function (result) {
+                  conrefifier.convert(match, data_vars, function(result) {
                     modifiedFileData.page[fileKey] = result;
                   });
                 });
@@ -91,7 +93,7 @@ module.exports = {
             return resolve(modifiedFileData);
           } else if (_.isString(value)) {
             let data_vars = conrefifier.setupConfig(metalsmith);
-            conrefifier.convert(value, data_vars, function (result) {
+            conrefifier.convert(value, data_vars, function(result) {
               modifiedFileData.page[fileKey] = result;
               return resolve(modifiedFileData);
             });
@@ -104,13 +106,18 @@ module.exports = {
 
     function applyCustomizations(html) {
       return html.replace(OPEN_INTRO, '<div class="intro">')
-                     .replace(CLOSE_INTRO,  '</div>');
+        .replace(CLOSE_INTRO, '</div>');
     }
 
     function applyTOC(html) {
       return toc.process(html, {
         header: '<h<%= level %>><a name="<%= anchor %>" class="anchor" href="#<%= anchor %>"><span class="octicon octicon-link"></span></a><%= header %></h<%= level %>>'
       });
+    }
+
+    // TODO: ignore pre, code, tt ancestors
+    function applyEmoji(html) {
+      return emojis.replaceWithHtml(html, 'https://assets-cdn.github.com/images/icons/emoji/')
     }
   }
 };

@@ -25,4 +25,8 @@ describe("Simple renderer", function() {
   it("should render header links", function() {
     expect(this.outfile("headers.html")).toMatch(this.realfile("simple", "headers.html"));
   });
+
+  it("should render emoji links", function() {
+    expect(this.outfile("emoji.html")).toMatch(this.realfile("simple", "emoji.html"));
+  });
 });
