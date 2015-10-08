@@ -1,6 +1,9 @@
 {
   "name": "graffito",
   "version": "0.0.1",
+  "author": {
+    "name": "Garen J. Torikian"
+  },
   "dependencies": {
     "babel": "5.8.3",
     "js-yaml": "3.4.2",
@@ -12,6 +15,7 @@
     "metalsmith-metadata": "0.0.1",
     "remarkable": "1.6.0",
     "tinyliquid": "0.2.29",
+    "toc": "0.4.0",
     "walk": "2.3.9"
   },
   "scripts": {

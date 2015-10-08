@@ -18,8 +18,11 @@ describe("Simple renderer", function() {
     expect(this.outfile("simple.html")).toEqual("<p><strong>Wow!</strong> Markdown!</p>");
   });
 
-  it("should render admonitions", function() {
+  it("should render intros", function() {
     expect(this.outfile("admonition.html")).toMatch(this.realfile("simple", "intro.html"));
   });
-});
 
+  it("should render header links", function() {
+    expect(this.outfile("headers.html")).toMatch(this.realfile("simple", "headers.html"));
+  });
+});

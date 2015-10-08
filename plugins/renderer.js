@@ -8,6 +8,8 @@ let path = require('path'),
   md = new Remarkable(),
   Liquid = require("liquid-node"),
   engine = new Liquid.Engine(),
+  toc = require('toc'),
+
   _ = require('lodash');
 
 const LIQUID_CONTENT = /\{\{.+?\}\}/g;
@@ -45,7 +47,10 @@ module.exports = {
       return new Promise(function (resolve) {
         let contents = fileData.contents.toString();
         let parsed = md.render(contents);
+
         parsed = applyCustomizations(parsed);
+        parsed = applyTOC(parsed);
+
         fileData.contents = new Buffer(parsed);
 
         delete files[file];
@@ -97,9 +102,15 @@ module.exports = {
       });
     };
 
-    function applyCustomizations(contents) {
-      return contents.replace(OPEN_INTRO, '<div class="intro">')
+    function applyCustomizations(html) {
+      return html.replace(OPEN_INTRO, '<div class="intro">')
                      .replace(CLOSE_INTRO,  '</div>');
+    }
+
+    function applyTOC(html) {
+      return toc.process(html, {
+        header: '<h<%= level %>><a name="<%= anchor %>" class="anchor" href="#<%= anchor %>"><span class="octicon octicon-link"></span></a><%= header %></h<%= level %>>'
+      });
     }
   }
 };
