@@ -7,4 +7,7 @@ beforeEach(function() {
   this.outfile = function(filename) {
     return _.trim(fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", filename), 'utf8'));
   }
+  this.realfile = function(dirname, filename) {
+    return _.trim(fs.readFileSync(path.join(this.FIXTURES_DIR, dirname, filename), 'utf8'));
+  }
 });

@@ -12,6 +12,9 @@ let path = require('path'),
 
 const LIQUID_CONTENT = /\{\{.+?\}\}/g;
 
+const OPEN_INTRO = /<p>\{\{#intro\}\}<\/p>/g;
+const CLOSE_INTRO = /<p>\{\{\/intro\}\}<\/p>/g;
+
 module.exports = {
   markdown: async function (files, metalsmith, done) {
     debugMarkdown("Markdown");
@@ -42,6 +45,7 @@ module.exports = {
       return new Promise(function (resolve) {
         let contents = fileData.contents.toString();
         let parsed = md.render(contents);
+        parsed = applyCustomizations(parsed);
         fileData.contents = new Buffer(parsed);
 
         delete files[file];
@@ -92,5 +96,10 @@ module.exports = {
         }
       });
     };
+
+    function applyCustomizations(contents) {
+      return contents.replace(OPEN_INTRO, '<div class="intro">')
+                     .replace(CLOSE_INTRO,  '</div>');
+    }
   }
 };
