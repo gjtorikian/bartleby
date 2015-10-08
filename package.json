@@ -26,5 +26,10 @@
     "debug": "^2.2.0",
     "eslint": "^1.6.0",
     "jasmine-es6": "^0.0.18"
+  },
+  "license": "MIT",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/gjtorikian/graffito.git"
   }
 }
