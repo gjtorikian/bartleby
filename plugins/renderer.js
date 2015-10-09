@@ -23,7 +23,10 @@ module.exports = {
   markdown: async function(files, metalsmith, done) {
     debugMarkdown("Markdown");
     for (let file of Object.keys(files)) {
-      await processFile(metalsmith, file);
+      await processFile(metalsmith, file).then(null, function(error) {
+        if (error)
+          console.error(`Error while processing ${file}: ${error}`);
+      });
     }
     debugMarkdown("Markdown");
     done();
@@ -45,7 +48,10 @@ module.exports = {
       let dataVars = conrefifier.setupConfig(metalsmith._source, metalsmith._metadata);
 
       for (let fileKey of Object.keys(fileData)) {
-        await processFrontmatter(dataVars, files[file], fileKey);
+        await processFrontmatter(dataVars, files[file], fileKey).then(null, function(error) {
+          if (error)
+            console.error(`Error processing frontmatter of ${file}: ${error}`);
+        });
       }
 
       return new Promise(function(resolve) {
