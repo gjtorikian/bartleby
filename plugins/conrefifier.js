@@ -3,6 +3,11 @@ var datafiles = require('./datafiles');
 
 module.exports = {
   dataFileVariables: function (config, path) {
+    // There is no config.yml
+    if (_.isUndefined(config)) {
+      return {};
+    }
+
     let dataVars = {};
     let scopes = _.filter(config.data_file_variables, function (v) {
       return (_.isEmpty(v.scope.path) || new RegExp(v.scope.path).test(path));
