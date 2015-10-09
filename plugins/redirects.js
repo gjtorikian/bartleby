@@ -6,7 +6,9 @@ module.exports = {
     return new Promise(function(resolve) { return resolve(); });
 
     function generateRedirectFrom(metalsmith, fileData, value) {
-
+      // console.log(metalsmith)
+      // console.log(fileData)
+      // console.log(value)
     }
   }
 };

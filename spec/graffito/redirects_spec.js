@@ -16,7 +16,6 @@ describe("Redirects renderer", function() {
   });
 
   fit("should render redirect_from", function() {
-    expect(1).toEqual(1);
-    // expect(this.outfile("redirect_from.html")).toMatch(this.realfile("redirects", "redirect_from.html"));
+    expect(this.outfile("redirect_from.html")).toMatch(this.realfile("redirects", "redirect_from.html"));
   });
 });

@@ -83,14 +83,14 @@ module.exports = {
           return resolve(fileData);
         }
 
-        // if (fileKey == "redirect_from") {
-        //   redirects.createRedirectFrom(metalsmith, fileData, fileKey);
-        //   return resolve(fileData);
-        // }
-        // if (fileKey == "redirect_to") {
-        //   redirects.createRedirectTo(metalsmith, fileData, fileKey);
-        //   return resolve(fileData)
-        // }
+        if (fileKey == "redirect_from") {
+          redirects.createRedirectFrom(metalsmith, fileData, fileKey);
+          return resolve(fileData);
+        }
+        if (fileKey == "redirect_to") {
+          redirects.createRedirectTo(metalsmith, fileData, fileKey);
+          return resolve(fileData)
+        }
 
         let value = fileData[fileKey];
         var modifiedFileData = fileData;
