@@ -38,12 +38,13 @@ module.exports = {
     async function processFile(metalsmith, file) {
       if (".md" != path.extname(file)) return;
 
-      var fileData = files[file];
+      let fileData = files[file];
       let modifiedFileData = [];
       let dir = path.dirname(file);
       let html = path.basename(file, path.extname(file)) + '.html';
       if ('.' != dir) html = dir + '/' + html;
 
+      // TODO: does this need to be in the loop? prob not.
       files[file].page = {}
       let dataVars = conrefifier.setupConfig(metalsmith._source, metalsmith._metadata);
 
