@@ -3,6 +3,7 @@ let path = require('path'),
   debug = require('debug'),
   debugMarkdown = debug('markdown'),
   conrefifier = require('./conrefifier'),
+  redirects   = require('./redirects'),
 
   Remarkable = require('remarkable'),
   md = new Remarkable(),
@@ -70,6 +71,15 @@ module.exports = {
       return new Promise(function(resolve) {
         if (fileKey == "contents" || fileKey == "mode" || fileKey == "stats") {
           return resolve(fileData);
+        }
+
+        if (fileKey == "redirect_from") {
+          redirects.createRedirectFrom(metalsmith, fileData, fileKey);
+          return resolve(fileData);
+        }
+        if (fileKey == "redirect_to") {
+          redirects.createRedirectTo(metalsmith, fileData, fileKey);
+          return resolve(fileData)
         }
 
         let value = fileData[fileKey];

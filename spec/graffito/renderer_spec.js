@@ -15,7 +15,7 @@ describe("Simple renderer", function() {
   });
 
   it("should render simple Markdown", function() {
-    expect(this.outfile("simple.html")).toEqual("<p><strong>Wow!</strong> Markdown!</p>");
+    expect(this.outfile("simple.html")).toMatch(this.realfile("simple", "simple.html"));
   });
 
   it("should render intros", function() {

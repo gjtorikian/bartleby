@@ -8,13 +8,13 @@ let join = path.join;
 module.exports = permalinks;
 
 function permalinks(options) {
-  let pattern = options.pattern;
+  let prefix = options.prefix;
 
   return async function (files, metalsmith, done) {
     setImmediate(done);
 
     for (let file of Object.keys(files)) {
-      await processPermalink(files, file);
+      await processPermalink(prefix, files, file);
     }
 
     return new Promise(function (resolve) {
@@ -23,16 +23,17 @@ function permalinks(options) {
   };
 };
 
-function processPermalink(files, file) {
+function processPermalink(prefix, files, file) {
   return new Promise(function (resolve) {
     if (!html(file)) resolve();
     let data = files[file];
     if (data['permalink'] === false) resolve();
-    let path = resolvePath(file);
+    let path = join(prefix, resolvePath(file));
+
     // add to path data for use in links in templates
     // data.path = '.' == path ? '' : path;
 
-    let out = join(path, options.indexFile || 'index.html');
+    let out = join(path, 'index.html');
 
     delete files[file];
     files[out] = data;
@@ -52,21 +53,6 @@ function resolvePath(path) {
   let ret = dirname(path);
   let base = basename(path, extname(path));
   if (base != 'index') ret = join(ret, base).replace('\\', '/');
-  return ret;
-}
-
-/**
- * Get the params from a `pattern` string.
- *
- * @param {String} pattern
- * @return {Array}
- */
-
-function params(pattern) {
-  let matcher = /:(\w+)/g;
-  let ret = [];
-  let m;
-  while (m = matcher.exec(pattern)) ret.push(m[1]);
   return ret;
 }
 

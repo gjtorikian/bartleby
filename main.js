@@ -74,7 +74,7 @@ module.exports = function(buildOptions) {
           "pattern": "*.html"
         }))
         .use(permalinks({
-          pattern: ":name"
+          prefix: "articles/"
         }))
         .build(function (err) {
           if (err) throw err;
