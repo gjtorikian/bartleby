@@ -13,21 +13,23 @@ module.exports = {
   fileHandler: function (root, fileStat, next) {
     if (".yml" != path.extname(fileStat.name)) return next();
 
-    fs.readFile(path.resolve(root, fileStat.name), 'utf8', function (err, str) {
+    fs.readFile(path.resolve(root, fileStat.name), 'utf8', function (err, yml) {
       if (err) throw err;
-      var parsed_str = str.replace(/\{%.+?%\}/g, '');
-      var doc = yaml.safeLoad(parsed_str);
 
-      var dataPath = `${root}/${fileStat.name}`
+      var doc = yaml.safeLoad(yml);
+
+      let dataPath = root.slice(root.indexOf("/data/") + 1);
+
+      dataPath = `${dataPath}/${fileStat.name}`
         .replace(/^data\//g, '').replace(/\//g, '.').replace(/\.yml/, '');
 
-      Object.keys(doc).forEach(function (doc_key) {
-        var data_key = dataPath,
-          nested_data = {};
-        data_key = `${data_key}.${doc_key}`;
+      Object.keys(doc).forEach(function (docKey) {
+        var dataKey = dataPath,
+            nestedData = {};
+        dataKey = `${dataKey}.${docKey}`;
 
-        helpers.createNestedObject(nested_data, data_key.split('.'), doc[doc_key]);
-        data = _.merge(data, nested_data);
+        helpers.createNestedObject(nestedData, dataKey.split('.'), doc[docKey]);
+        data = _.merge(data, nestedData);
       });
 
       next();

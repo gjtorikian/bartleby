@@ -42,57 +42,68 @@ module.exports = {
       if ('.' != dir) html = dir + '/' + html;
 
       files[file].page = {}
+      let dataVars = conrefifier.setupConfig(metalsmith._source, metalsmith._metadata);
+
       for (let fileKey of Object.keys(fileData)) {
-        await processFrontmatter(metalsmith, files[file], fileKey);
+        await processFrontmatter(dataVars, files[file], fileKey);
       }
 
       return new Promise(function(resolve) {
         let contents = fileData.contents.toString();
-        let parsed = md.render(contents);
 
-        parsed = applyCustomizations(parsed);
-        parsed = applyTOC(parsed);
-        parsed = applyEmoji(parsed);
+        // TODO: gross. we need to apply Liquid twice: once
+        // to apply the data, and a second to render the conditionals
+        // within that data
+        applyLiquid(contents, dataVars, function(firstResult) {
+          applyLiquid(firstResult, dataVars, function(finalResult) {
+            let parsed = md.render(finalResult);
 
-        fileData.contents = new Buffer(parsed);
+            parsed = applyCustomizations(parsed);
+            parsed = applyTOC(parsed);
+            parsed = applyEmoji(parsed);
 
-        delete files[file];
-        files[html] = fileData;
-        delete files[html].page.page; // TODO: erroneous circular reference here
+            fileData.contents = new Buffer(parsed);
 
-        return resolve();
+            delete files[file];
+            files[html] = fileData;
+            delete files[html].page.page; // TODO: erroneous circular reference here
+
+            return resolve();
+          });
+        });
       });
     }
 
     /* This function goes through a file's frontmatter and converts Liquid variables
        in Strings and Arrays
     */
-    function processFrontmatter(metalsmith, fileData, fileKey) {
+    function processFrontmatter(dataVars, fileData, fileKey) {
       return new Promise(function(resolve) {
         if (fileKey == "contents" || fileKey == "mode" || fileKey == "stats") {
           return resolve(fileData);
         }
 
-        if (fileKey == "redirect_from") {
-          redirects.createRedirectFrom(metalsmith, fileData, fileKey);
-          return resolve(fileData);
-        }
-        if (fileKey == "redirect_to") {
-          redirects.createRedirectTo(metalsmith, fileData, fileKey);
-          return resolve(fileData)
-        }
+        // if (fileKey == "redirect_from") {
+        //   redirects.createRedirectFrom(metalsmith, fileData, fileKey);
+        //   return resolve(fileData);
+        // }
+        // if (fileKey == "redirect_to") {
+        //   redirects.createRedirectTo(metalsmith, fileData, fileKey);
+        //   return resolve(fileData)
+        // }
 
         let value = fileData[fileKey];
         var modifiedFileData = fileData;
         modifiedFileData.page[fileKey] = value;
 
+        // We need to apply Liquid to the frontmatter to replace variables
+        // applied from the config file
         if (LIQUID_CONTENT.test(value)) {
           if (_.isArray(value)) {
             value = _.map(value, function(el) {
               if (LIQUID_CONTENT.test(el)) {
                 el.replace(LIQUID_CONTENT, function(match) {
-                  let data_vars = conrefifier.setup_config(datafiles.data, metalsmith);
-                  conrefifier.convert(match, data_vars, function(result) {
+                  applyLiquid(match, dataVars, function(result) {
                     modifiedFileData.page[fileKey] = result;
                   });
                 });
@@ -102,8 +113,7 @@ module.exports = {
             });
             return resolve(modifiedFileData);
           } else if (_.isString(value)) {
-            let data_vars = conrefifier.setupConfig(metalsmith);
-            conrefifier.convert(value, data_vars, function(result) {
+            applyLiquid(value, dataVars, function(result) {
               modifiedFileData.page[fileKey] = result;
               return resolve(modifiedFileData);
             });
@@ -114,20 +124,31 @@ module.exports = {
       });
     };
 
+    function applyLiquid(content, dataVars, callback) {
+      engine
+        .parse(content)
+        .then(function (template) {
+          return template.render(dataVars);
+        })
+        .then(function (result) {
+          callback(result);
+        });
+    }
+
     function applyCustomizations(html) {
       return html.replace(OPEN_INTRO, '<div class="intro">')
         .replace(CLOSE_INTRO, '</div>');
-    }
+    };
 
     function applyTOC(html) {
       return toc.process(html, {
         header: '<h<%= level %>><a name="<%= anchor %>" class="anchor" href="#<%= anchor %>"><span class="octicon octicon-link"></span></a><%= header %></h<%= level %>>'
       });
-    }
+    };
 
     // TODO: ignore pre, code, tt ancestors
     function applyEmoji(html) {
       return emojis.replaceWithHtml(html, 'https://assets-cdn.github.com/images/icons/emoji/')
-    }
+    };
   }
 };

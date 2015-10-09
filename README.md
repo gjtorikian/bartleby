@@ -13,6 +13,11 @@ npm run build
 * `data`
 * `page`
 
+* Data files are read
+* Config is read
+* Frontmatter is read
+  * Liquid is applied to frontmatter
+
 ## Usage
 
 ``` javascript
@@ -38,6 +43,7 @@ graffito([{
 
 | Option | Description | Default |
 | :----- | :---------- | :------ |
+| `data` | | `` |
 | `destination` | | `` |
 | `directory` | | `` |
 | `partials` | | `` |

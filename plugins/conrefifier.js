@@ -1,41 +1,30 @@
 var _ = require('lodash');
-var Liquid = require("liquid-node");
-var engine = new Liquid.Engine();
 var datafiles = require('./datafiles');
 
 module.exports = {
   dataFileVariables: function (config, path) {
-    let data_vars = {};
+    let dataVars = {};
     let scopes = _.filter(config.data_file_variables, function (v) {
       return (_.isEmpty(v.scope.path) || new RegExp(v.scope.path).test(path));
     });
 
     _.forEach(scopes, function (scope) {
-      data_vars = _.merge(data_vars, scope.values);
+      dataVars = _.merge(dataVars, scope.values);
     });
 
-    return data_vars;
+    return dataVars;
   },
 
-  setupConfig: function (metalsmith) {
-    let data_vars = _.isEmpty(metalsmith._source) ? {} : this.dataFileVariables(metalsmith._metadata.config, metalsmith._source)
+  setupConfig: function (source, metadata) {
+    let pageVars = _.isEmpty(source) ? {} : this.dataFileVariables(metadata.config, source)
     let config = {
-      page: data_vars
+      page: pageVars
     };
+
     return _.merge({
       'data': datafiles.data,
-      'config': metalsmith._metadata.site
+      'config': metadata.config
     }, config);
-  },
-
-  convert: function (content, data_vars, callback) {
-    engine
-      .parse(content)
-      .then(function (template) {
-        return template.render(data_vars);
-      })
-      .then(function (result) {
-        callback(result);
-      });
   }
+
 };

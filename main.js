@@ -14,7 +14,7 @@ let fs = require('fs'),
   walk = require('walk'),
   _ = require('lodash');
 
-module.exports = function(buildOptions) {
+module.exports = function(options, buildOptions) {
   if (_.isEmpty(buildOptions)) {
     console.error("Your argument is empty!");
   }
@@ -26,7 +26,7 @@ module.exports = function(buildOptions) {
   let config = yaml.safeLoad(fs.readFileSync('config.yml', 'utf8'));
 
   // Next, iterate on the data folder, pickin up YML files
-  let datawalker = walk.walk("data");
+  let datawalker = walk.walk(options.data);
 
   debugData("Start data");
   datawalker.on("file", datafiles.fileHandler);

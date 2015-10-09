@@ -1,6 +1,8 @@
 var graffito = require('../main')
 
-graffito([
+graffito({
+  data: "spec/fixtures/sample/data",
+}, [
   {
     source: "spec/fixtures/sample/content/dotcom/articles",
     destination: "_site/",
