@@ -6,7 +6,7 @@ let path = require('path'),
   redirects   = require('./redirects'),
 
   Remarkable = require('remarkable'),
-  md = new Remarkable(),
+  md = new Remarkable({html: true}),
   Liquid = require("liquid-node"),
   engine = new Liquid.Engine(),
   toc = require('toc'),
@@ -15,10 +15,8 @@ let path = require('path'),
   matter = require('gray-matter'),
   _ = require('lodash');
 
-const LIQUID_CONTENT = /\{\{.+?\}\}/g;
-
-const OPEN_INTRO = /<p>\{\{#intro\}\}<\/p>/g;
-const CLOSE_INTRO = /<p>\{\{\/intro\}\}<\/p>/g;
+const OPEN_INTRO = /\{\{#intro\}\}/g;
+const CLOSE_INTRO = /\{\{\/intro\}\}/g;
 
 module.exports = {
   markdown: async function(files, metalsmith, done) {
@@ -51,6 +49,8 @@ module.exports = {
       fileData = files[file];
       let contents = fileData.contents.toString();
 
+      contents = applyIntro(contents);
+
       // This first pass converts the frontmatter variables,
       // and inserts data variables into the body
       let result = await applyLiquid(contents, dataVars);
@@ -71,7 +71,6 @@ module.exports = {
 
       return new Promise(function(resolve, reject) {
         try {
-          renderedBody = applyCustomizations(renderedBody);
           renderedBody = applyTOC(renderedBody);
           renderedBody = applyEmoji(renderedBody);
 
@@ -108,8 +107,8 @@ module.exports = {
         });
     }
 
-    function applyCustomizations(html) {
-      return html.replace(OPEN_INTRO, '<div class="intro">')
+    function applyIntro(text) {
+      return text.replace(OPEN_INTRO, '<div class="intro">')
         .replace(CLOSE_INTRO, '</div>');
     };
 
