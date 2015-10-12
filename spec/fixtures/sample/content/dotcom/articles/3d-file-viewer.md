@@ -1,5 +1,5 @@
 ---
-title: 3D File Viewer {{ data.variables.product.product_name.dotcom }}
+title: 3D File Viewer
 redirect_from:
   - /articles/stl-file-viewer/
   - /articles/stl-file-viewer-for-{{ page.version }}/

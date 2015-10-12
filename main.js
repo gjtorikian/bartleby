@@ -64,6 +64,7 @@ module.exports = function(options, buildOptions) {
         .source(build.source)
         .destination(build.destination)
         .metadata(metadata)
+        .frontmatter(false) //disabling for frontmatter manipulation later
         .use(ignore(metadata.config.exclude))
         .use(renderer.markdown)
         .use(layouts({
