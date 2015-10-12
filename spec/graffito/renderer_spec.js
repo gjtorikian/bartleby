@@ -1,8 +1,8 @@
   var Metalsmith = require("metalsmith");
-var renderer = require('../../plugins/renderer');
-var layouts = require('metalsmith-layouts');
-var fs = require('fs'),
-    path = require('path');
+var renderer = require("../../plugins/renderer");
+var layouts = require("metalsmith-layouts");
+var fs = require("fs"),
+    path = require("path");
 
 describe("Simple renderer", function() {
   beforeEach(function(done) {

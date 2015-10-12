@@ -1,19 +1,19 @@
-let path = require('path'),
+let path = require("path"),
 
-  debug = require('debug'),
-  debugMarkdown = debug('markdown'),
-  conrefifier = require('./conrefifier'),
-  redirects   = require('./redirects'),
+  debug = require("debug"),
+  debugMarkdown = debug("markdown"),
+  conrefifier = require("./conrefifier"),
+  redirects   = require("./redirects"),
 
-  Remarkable = require('remarkable'),
+  Remarkable = require("remarkable"),
   md = new Remarkable({html: true}),
   Liquid = require("liquid-node"),
   engine = new Liquid.Engine(),
-  toc = require('toc'),
-  emojis = require('emojis'),
+  toc = require("toc"),
+  emojis = require("emojis"),
 
-  matter = require('gray-matter'),
-  _ = require('lodash');
+  matter = require("gray-matter"),
+  _ = require("lodash");
 
 const OPEN_INTRO = /\{\{#intro\}\}/g;
 const CLOSE_INTRO = /\{\{\/intro\}\}/g;
@@ -27,8 +27,10 @@ module.exports = {
 
     for (let file of Object.keys(files)) {
       await processFile(file).then(null, function(error) {
-        if (error)
+        if (error) {
           console.error(`Error while processing ${file}: ${error}`);
+          throw error;
+        }
       });
     }
     debugMarkdown("Markdown");
@@ -108,19 +110,19 @@ module.exports = {
     }
 
     function applyIntro(text) {
-      return text.replace(OPEN_INTRO, '<div class="intro">')
-        .replace(CLOSE_INTRO, '</div>');
-    };
+      return text.replace(OPEN_INTRO, "<div class=\"intro\">")
+        .replace(CLOSE_INTRO, "</div>");
+    }
 
     function applyTOC(html) {
       return toc.process(html, {
-        header: '<h<%= level %>><a name="<%= anchor %>" class="anchor" href="#<%= anchor %>"><span class="octicon octicon-link"></span></a><%= header %></h<%= level %>>'
+        header: "<h<%= level %>><a name=\"<%= anchor %>\" class=\"anchor\" href=\"#<%= anchor %>\"><span class=\"octicon octicon-link\"></span></a><%= header %></h<%= level %>>"
       });
-    };
+    }
 
     // TODO: need to ignore pre, code, tt ancestors
     function applyEmoji(html) {
       return emojis.replaceWithHtml(html, 'https://assets-cdn.github.com/images/icons/emoji/')
-    };
+    }
   }
 };

@@ -1,4 +1,4 @@
-let path = require('path');
+let path = require("path");
 
 let basename = path.basename;
 let dirname = path.dirname;
@@ -18,22 +18,22 @@ function permalinks(options) {
     }
 
     return new Promise(function (resolve) {
-      resolve()
+      resolve();
     });
-  };
-};
+  }
+}
 
 function processPermalink(prefix, files, file) {
   return new Promise(function (resolve) {
     if (!html(file)) resolve();
     let data = files[file];
-    if (data['permalink'] === false) resolve();
+    if (data.permalink === false) resolve();
     let path = join(prefix, resolvePath(file));
 
     // add to path data for use in links in templates
     // data.path = '.' == path ? '' : path;
 
-    let out = join(path, 'index.html');
+    let out = join(path, "index.html");
 
     delete files[file];
     files[out] = data;
@@ -52,7 +52,7 @@ function processPermalink(prefix, files, file) {
 function resolvePath(path) {
   let ret = dirname(path);
   let base = basename(path, extname(path));
-  if (base != 'index') ret = join(ret, base).replace('\\', '/');
+  if (base != "index") ret = join(ret, base).replace("\\", "/");
   return ret;
 }
 

@@ -1,5 +1,5 @@
-var _ = require('lodash');
-var datafiles = require('./datafiles');
+var _ = require("lodash");
+var datafiles = require("./datafiles");
 
 module.exports = {
   dataFileVariables: function (config, path) {
@@ -21,14 +21,14 @@ module.exports = {
   },
 
   setupConfig: function (source, metadata) {
-    let pageVars = _.isEmpty(source) ? {} : this.dataFileVariables(metadata.config, source)
+    let pageVars = _.isEmpty(source) ? {} : this.dataFileVariables(metadata.config, source);
     let config = {
       page: pageVars
     };
 
     return _.merge({
-      'data': datafiles.data,
-      'config': metadata.config
+      data: datafiles.data,
+      config: metadata.config
     }, config);
   }
 
