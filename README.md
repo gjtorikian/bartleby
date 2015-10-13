@@ -39,6 +39,8 @@ graffito([{
 
 ```
 
+Returns a Promise.
+
 ## Options
 
 | Option | Description | Default |

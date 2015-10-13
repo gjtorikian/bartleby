@@ -33,12 +33,19 @@ module.exports = function(options, buildOptions) {
   datawalker.on("errors", datafiles.errorsHandler);
   datawalker.on("end", endHandler);
 
+  return new Promise(async function (resolve) {
+    let original_data = await endHandler();
+    await runBuild(original_data);
+    return resolve();
+  });
+
   // Once the data files are collected, it's time to process each directory
   async function endHandler() {
     debugData("End data");
+    return _.cloneDeep(datafiles.data);
+  }
 
-    let original_data = _.cloneDeep(datafiles.data);
-
+  async function runBuild(original_data) {
     let filtered_data = await datafiles.filter(original_data, "dotcom");
     let metadata = {
       data: original_data,
@@ -50,8 +57,6 @@ module.exports = function(options, buildOptions) {
       await processBuild(build, metadata);
     }
     debugBuild("End build");
-
-    return new Promise(function (resolve) { resolve(); });
   }
 
   function processBuild(build, metadata) {
@@ -64,18 +69,14 @@ module.exports = function(options, buildOptions) {
         .source(build.source)
         .destination(build.destination)
         .metadata(metadata)
-        .frontmatter(false) //disabling for frontmatter manipulation later
+        .frontmatter(false) // disabling for frontmatter manipulation later
         .use(ignore(metadata.config.exclude))
         .use(renderer.markdown)
         .use(layouts({
           "engine": "liquid",
           "directory": build.directory,
           "partials": build.partials,
-          "default": "default.html",
-          "pattern": "*.html"
-        }))
-        .use(permalinks({
-          prefix: "articles/"
+          "default": "default.html"
         }))
         .build(function (err) {
           if (err) throw err;
