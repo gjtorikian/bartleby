@@ -64,6 +64,11 @@ module.exports = {
         await createRedirects(file, frontmatterKey, frontmatter[frontmatterKey]);
       }
 
+      // we can stop now, the redirector will handle it
+      if (frontmatter.redirect_to) {
+        return new Promise(function(resolve) { return resolve(); });
+      }
+
       // apply frontmatter under the "page" namespace
       files[file].page = frontmatter;
 
@@ -92,10 +97,10 @@ module.exports = {
     function createRedirects(file, frontmatterKey, frontmatterValue) {
       return new Promise(function(resolve) {
         if (frontmatterKey == "redirect_from") {
-          redirects.createRedirectFrom(metalsmith, files, file, fileData, frontmatterValue);
+          redirects.createRedirectFrom(metalsmith, files, file, frontmatterValue);
         }
         else if (frontmatterKey == "redirect_to") {
-          redirects.createRedirectTo(metalsmith, files, file, fileData, frontmatterValue);
+          redirects.createRedirectTo(metalsmith, files, file, frontmatterValue);
         }
         return resolve();
       });

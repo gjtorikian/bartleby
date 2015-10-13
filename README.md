@@ -50,3 +50,9 @@ Returns a Promise.
 | `directory` | | `` |
 | `partials` | | `` |
 | `source` | | `` |
+
+## Redirects
+
+### Redirect_from array
+
+### Redirect_to
