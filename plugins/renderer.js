@@ -45,8 +45,8 @@ module.exports = {
 
       let modifiedFileData = [];
       let dir = path.dirname(file);
-      let html = path.basename(file, path.extname(file)) + ".html";
-      if ("." != dir) html = dir + "/" + html;
+      let pathname = path.basename(file, path.extname(file));
+      if ("." != dir) pathname = dir + "/" + pathname;
 
       fileData = files[file];
       let contents = fileData.contents.toString();
@@ -61,7 +61,7 @@ module.exports = {
       let frontmatter = parsed.data;
 
       for (let frontmatterKey of Object.keys(frontmatter)) {
-        await createRedirects(frontmatterKey);
+        await createRedirects(file, frontmatterKey, frontmatter[frontmatterKey]);
       }
 
       // apply frontmatter under the "page" namespace
@@ -79,7 +79,7 @@ module.exports = {
           fileData.contents = new Buffer(renderedBody);
 
           delete files[file];
-          files[html] = fileData;
+          files[`${pathname}/index.html`] = fileData;
 
           return resolve();
         } catch (error) {
@@ -89,17 +89,17 @@ module.exports = {
       });
     }
 
-    function createRedirects(frontmatterKey) {
+    function createRedirects(file, frontmatterKey, frontmatterValue) {
       return new Promise(function(resolve) {
         if (frontmatterKey == "redirect_from") {
-          redirects.createRedirectFrom(frontmatterKey);
+          redirects.createRedirectFrom(metalsmith, files, file, fileData, frontmatterValue);
         }
         else if (frontmatterKey == "redirect_to") {
-          redirects.createRedirectTo(frontmatterKey);
+          redirects.createRedirectTo(metalsmith, files, file, fileData, frontmatterValue);
         }
         return resolve();
       });
-    };
+    }
 
     function applyLiquid(content, dataVars) {
       return engine
