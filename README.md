@@ -16,7 +16,7 @@ npm run build
 * Data files are read
 * Config is read
 * Frontmatter is read
-  * Liquid is applied to frontmatter
+* Liquid is applied to frontmatter
 
 ## Usage
 
@@ -45,7 +45,7 @@ Returns a Promise.
 
 | Option | Description | Default |
 | :----- | :---------- | :------ |
-| `data` | | `` |
+| `base` | | `` |
 | `destination` | | `` |
 | `directory` | | `` |
 | `partials` | | `` |

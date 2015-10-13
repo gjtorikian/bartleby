@@ -1,7 +1,7 @@
 var fs = require("fs"),
     path = require("path");
 
-describe("Simple renderer", function() {
+describe("Redirects renderer", function() {
   beforeEach(function(done) {
     this.runBuild(path.join(this.FIXTURES_DIR, "redirects"), function() {
       done();

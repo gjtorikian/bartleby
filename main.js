@@ -1,18 +1,19 @@
 let fs = require("fs"),
+    path = require("path"),
 
-  debug = require("debug"),
-  debugBuild = debug("build"),
-  debugData = debug("data"),
-  datafiles = require("./plugins/datafiles"),
-  renderer = require("./plugins/renderer"),
-  permalinks = require("./plugins/permalinks"),
+    debug = require("debug"),
+    debugBuild = debug("build"),
+    debugData = debug("data"),
+    datafiles = require("./plugins/datafiles"),
+    renderer = require("./plugins/renderer"),
+    permalinks = require("./plugins/permalinks"),
 
-  Metalsmith = require("metalsmith"),
-  ignore = require("metalsmith-ignore"),
-  layouts = require("metalsmith-layouts"),
-  yaml = require("js-yaml"),
-  walk = require("walk"),
-  _ = require("lodash");
+    Metalsmith = require("metalsmith"),
+    ignore = require("metalsmith-ignore"),
+    layouts = require("metalsmith-layouts"),
+    yaml = require("js-yaml"),
+    walk = require("walk"),
+    _ = require("lodash");
 
 module.exports = function(options, buildOptions) {
   if (_.isEmpty(buildOptions)) {
@@ -23,10 +24,10 @@ module.exports = function(options, buildOptions) {
   }
 
   // First, parse the main site config data
-  let config = yaml.safeLoad(fs.readFileSync("config.yml", "utf8"));
+  let config = yaml.safeLoad(fs.readFileSync(path.join(options.base, "_graffito.yml"), "utf8"));
 
-  // Next, iterate on the data folder, pickin up YML files
-  let datawalker = walk.walk(options.data);
+  // Next, iterate on the data folder, picking up YML files
+  let datawalker = walk.walk(path.join(options.base, "data"));
 
   debugData("Start data");
   datawalker.on("file", datafiles.fileHandler);

@@ -9,7 +9,7 @@ module.exports = {
     }
 
     let dataVars = {};
-    let scopes = _.filter(config.data_file_variables, function (v) {
+    let scopes = _.filter(config.data_variables, function (v) {
       return (_.isEmpty(v.scope.path) || new RegExp(v.scope.path).test(path));
     });
 

@@ -18,7 +18,7 @@ beforeEach(function() {
   }
 
   this.runBuild = function(src, callback) {
-    graffito({ data: "spec/fixtures/sample/data" }, [
+    graffito({ base: "spec/fixtures/sample/" }, [
       {
         source: src,
         destination: path.join(this.FIXTURES_DIR, "_site"),
