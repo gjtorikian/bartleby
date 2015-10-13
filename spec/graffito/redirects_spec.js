@@ -1,21 +1,16 @@
-var Metalsmith = require("metalsmith");
-var renderer = require("../../plugins/renderer");
-var redirects = require("../../plugins/redirects");
 var fs = require("fs"),
     path = require("path");
 
-describe("Redirects renderer", function() {
+describe("Simple renderer", function() {
   beforeEach(function(done) {
-    Metalsmith(__dirname)
-    .source(path.join(this.FIXTURES_DIR, "redirects"))
-    .destination(path.join(this.FIXTURES_DIR, "_site"))
-    .use(renderer.markdown)
-    .build(function(e) {
+    this.runBuild(path.join(this.FIXTURES_DIR, "redirects"), function() {
       done();
     });
   });
 
-  it("should render redirect_from", function() {
-    expect(this.outfile("redirect_from.html")).toMatch(this.realfile("redirects", "redirect_from.html"));
+
+  it("should implement a redirect from page", function() {
+    let outfile = fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", "articles", "how-do-i-add-links-to-my-wiki", "index.html"))
+    expect(outfile).toMatch(`<meta http-equiv=refresh content="0; url=${this.FIXTURES_DIR}/_site/redirect_from/">`);
   });
 });
