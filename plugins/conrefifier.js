@@ -27,8 +27,10 @@ module.exports = {
     };
 
     return _.merge({
-      data: datafiles.data,
-      config: metadata.config
+      site: {
+        data: datafiles.data,
+        config: metadata.config
+      }
     }, config);
   }
 

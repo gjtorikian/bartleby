@@ -23,8 +23,15 @@ module.exports = function(options, buildOptions) {
     console.error("Your argument is not an array!");
   }
 
+  const CONFIG_PATH = path.join(options.base, "_graffito.yml");
+  let config = {};
+
   // First, parse the main site config data
-  let config = yaml.safeLoad(fs.readFileSync(path.join(options.base, "_graffito.yml"), "utf8"));
+  try {
+    if (fs.lstatSync(CONFIG_PATH)) {
+      config = yaml.safeLoad(fs.readFileSync(CONFIG_PATH, "utf8"));
+    }
+  } catch(e) { /* file doesn't exist */ }
 
   // Next, iterate on the data folder, picking up YML files
   let datawalker = walk.walk(path.join(options.base, "data"));
