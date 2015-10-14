@@ -6,7 +6,6 @@ let fs = require("fs"),
     debugData = debug("data"),
     datafiles = require("./plugins/datafiles"),
     renderer = require("./plugins/renderer"),
-    permalinks = require("./plugins/permalinks"),
 
     Metalsmith = require("metalsmith"),
     ignore = require("metalsmith-ignore"),
