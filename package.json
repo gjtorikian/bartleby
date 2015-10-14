@@ -22,6 +22,7 @@
   "scripts": {
     "build": "DEBUG=data,build,markdown babel-node main.js",
     "debug": "DEBUG=data,build,markdown babel-node sample/build.js",
+    "personal": "DEBUG=graffito* babel-node dotcom",
     "test": "./node_modules/jasmine-es6/bin/jasmine.js",
     "lint": "eslint ."
   },

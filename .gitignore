@@ -32,3 +32,5 @@ node_modules
 _site/
 config.yml
 todo.yaml
+dotcom/
+dotcom.js
