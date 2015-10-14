@@ -8,7 +8,7 @@ beforeEach(function() {
   this.FIXTURES_DIR = path.join(__dirname, "..", "fixtures");
 
   this.outfile = function(dirname, filename) {
-    var outfile = _.trim(fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", dirname, filename), "utf8"))
+    var outfile = _.trim(fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", dirname, filename), "utf8"));
     return outfile.replace(/^\s*\n/gm, "");
   }
 
