@@ -34,3 +34,4 @@ config.yml
 todo.yaml
 dotcom/
 dotcom.js
+gulpfile.js
