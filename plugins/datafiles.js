@@ -1,51 +1,58 @@
-var fs = require("fs"),
+var fs = require("mz/fs"),
   path = require("path"),
 
+  renderer = require("./renderer"),
+  conrefifier = require("./conrefifier"),
   helpers = require("./helpers"),
 
   yaml = require("js-yaml"),
   _ = require("lodash");
 
 var data = {};
+var files = {};
 module.exports = {
   data: data,
 
-  fileHandler: function (root, fileStat, next) {
-    if (".yml" != path.extname(fileStat.name)) return next();
+  /**
+   * Given a data file, this method reads it. It also converts any conditionals
+   * encountered, based on the site.config.data_variables value.
+  */
+  process: async function(config, dataFile) {
+    if (".yml" != path.extname(dataFile.name)) return new Promise(function(resolve) { return resolve(); });
 
-    fs.readFile(path.resolve(root, fileStat.name), "utf8", function (err, yml) {
-      if (err) throw err;
+    let location = path.join(dataFile.root, dataFile.name);
 
-      var doc = yaml.safeLoad(yml);
+    try {
+      let yml = await fs.readFile(location, "utf8");
 
-      let dataPath = root.slice(root.indexOf("/data/") + 1);
+      let key = location.slice(location.indexOf("/data/") + 1);
+      files[key] = yml;
 
-      dataPath = `${dataPath}/${fileStat.name}`
-        .replace(/^data\//g, "").replace(/\//g, ".").replace(/\.yml/, "");
+      for (let dataPath of Object.keys(files)) {
+        let contents = files[dataPath]
+        let dataVars = conrefifier.setupConfigVars(config, dataPath);
+        let yml = await helpers.applyLiquid(contents, dataVars);
 
-      Object.keys(doc).forEach(function (docKey) {
-        var dataKey = dataPath,
-            nestedData = {};
-        dataKey = `${dataKey}.${docKey}`;
+        var doc = yaml.safeLoad(yml);
+        let dataKey = `${dataPath}`
+          .replace(/^data\//g, "").replace(/\//g, ".").replace(/\.yml/, "");
 
-        helpers.createNestedObject(nestedData, dataKey.split("."), doc[docKey]);
-        data = _.merge(data, nestedData);
-      });
+        let nestedData = {};
+        // This can be undefined if the applyLiquid step eradicated the contents, based
+        // on a conditional
+        if (!_.isUndefined(doc)) {
+          Object.keys(doc).forEach(function (docKey) {
+            let keys = `${dataKey}.${docKey}`;
+            helpers.createNestedObject(nestedData, keys.split("."), doc[docKey]);
+            data = _.merge(data, nestedData);
+          });
+        }
+      }
 
-      next();
-    });
-  },
-
-  errorsHandler: function (root, nodeStatsArray, next) {
-    nodeStatsArray.forEach(function (n) {
-      console.error("[ERROR] " + n.name);
-      console.error(n.error.message || (n.error.code + ": " + n.error.path));
-    });
-
-    next();
-  },
-
-  filter: async function (data, version) {
-    return data;
+      return new Promise(function(resolve) { return resolve(); });
+    } catch (e) {
+      console.error(`Error processing data file: ${e}`);
+      throw e;
+    }
   }
 };

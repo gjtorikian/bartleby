@@ -1,8 +1,10 @@
-var _ = require("lodash");
-var datafiles = require("./datafiles");
+let _ = require("lodash");
 
+/**
+ * Methods used to help process conditionals found in data files.
+*/
 module.exports = {
-  dataFileVariables: function (config, path) {
+  dataFileVariables: function (config, location) {
     // There is no config.yml
     if (_.isUndefined(config)) {
       return {};
@@ -10,7 +12,7 @@ module.exports = {
 
     let dataVars = {};
     let scopes = _.filter(config.data_variables, function (v) {
-      return (_.isEmpty(v.scope.path) || new RegExp(v.scope.path).test(path));
+      return (_.isEmpty(v.scope.path) || new RegExp(v.scope.path).test(location));
     });
 
     _.forEach(scopes, function (scope) {
@@ -20,18 +22,12 @@ module.exports = {
     return dataVars;
   },
 
-  setupConfig: function (source, metadata) {
-    let pageVars = _.isEmpty(source) ? {} : this.dataFileVariables(metadata.config, source);
-    let config = {
+  setupConfigVars: function (config, location) {
+    let pageVars = this.dataFileVariables(config, location);
+    let configVars = {
       page: pageVars
     };
 
-    return _.merge({
-      site: {
-        data: datafiles.data,
-        config: metadata.config
-      }
-    }, config);
+    return configVars;
   }
-
 };

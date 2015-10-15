@@ -2,93 +2,110 @@ let fs = require("fs"),
     path = require("path"),
 
     debug = require("debug"),
-    debugBuild = debug("build"),
-    debugData = debug("data"),
+    debugBuild = debug("graffito-build"),
+    debugData = debug("graffito-data"),
+    site = require("./plugins/site"),
     datafiles = require("./plugins/datafiles"),
     renderer = require("./plugins/renderer"),
+    layout = require("./plugins/layout"),
 
     Metalsmith = require("metalsmith"),
     ignore = require("metalsmith-ignore"),
-    layouts = require("metalsmith-layouts"),
     yaml = require("js-yaml"),
-    walk = require("walk"),
+    walk = require("walk-promise"),
     _ = require("lodash");
 
-module.exports = function(options, buildOptions) {
-  if (_.isEmpty(buildOptions)) {
-    console.error("Your argument is empty!");
+module.exports = async function(options, buildOptions) {
+  if (!_.isObject(options)) {
+    return new Promise(function(resolve, reject) {
+      return reject(new TypeError("Your initial options are not an object!"));
+    });
+  }
+  if (_.isEmpty(options)) {
+    return new Promise(function(resolve, reject) {
+      return reject(new TypeError("Your initial options are empty!"));
+    });
+  }
+  if (_.isUndefined(options.base)) {
+    return new Promise(function(resolve, reject) {
+      return reject(new TypeError("You're missing the `base` key in the initial options!"));
+    });
   }
   if (!_.isArray(buildOptions)) {
-    console.error("Your argument is not an array!");
+    return new Promise(function(resolve, reject) {
+      return reject(new TypeError("Your build options are not an array!"));
+    });
+  }
+  if (_.isEmpty(buildOptions)) {
+    return new Promise(function(resolve, reject) {
+      return reject(new TypeError("Your build options are empty!"));
+    });
   }
 
   const CONFIG_PATH = path.join(options.base, "_graffito.yml");
-  let config = {};
-
+  site.config = {};
   // First, parse the main site config data
   try {
     if (fs.lstatSync(CONFIG_PATH)) {
-      config = yaml.safeLoad(fs.readFileSync(CONFIG_PATH, "utf8"));
+      site.config = yaml.safeLoad(fs.readFileSync(CONFIG_PATH, "utf8"));
     }
   } catch(e) { /* file doesn't exist */ }
 
   // Next, iterate on the data folder, picking up YML files
-  let datawalker = walk.walk(path.join(options.base, "data"));
-
+  const DATA_PATH = path.join(options.base, "data");
   debugData("Start data");
-  datawalker.on("file", datafiles.fileHandler);
-  datawalker.on("errors", datafiles.errorsHandler);
-  datawalker.on("end", endHandler);
+  try {
+    if (fs.lstatSync(DATA_PATH)) {
+      let dataFiles = await walk(DATA_PATH);
+      for (let dataFile of dataFiles) {
+        await datafiles.process(site.config, dataFile);
+      }
+    }
+  } catch(e) { /* directory doesn't exist */ }
+  debugData("End data");
+
+  // Store data files at the site level
+  site.data = datafiles.data;
+
+  // process each build!
+  debugBuild("Start build");
+  for (let build of buildOptions) {
+    await processBuild(build);
+  }
+  debugBuild("End build");
 
   return new Promise(async function (resolve) {
-    let original_data = await endHandler();
-    await runBuild(original_data);
     return resolve();
   });
 
-  // Once the data files are collected, it's time to process each directory
-  async function endHandler() {
-    debugData("End data");
-    return _.cloneDeep(datafiles.data);
-  }
-
-  async function runBuild(original_data) {
-    let filtered_data = await datafiles.filter(original_data, "dotcom");
-    let metadata = {
-      data: original_data,
-      config: config
-    };
-
-    debugBuild("Start build");
-    for (let build of buildOptions) {
-      await processBuild(build, metadata);
-    }
-    debugBuild("End build");
-  }
-
-  function processBuild(build, metadata) {
+  function processBuild(build) {
     return new Promise(function (resolve) {
-      if (_.isEmpty(build)) {
+      // someone is being a jerk
+      if (!_.isObject(build) || _.isEmpty(build)) {
         return resolve();
       }
 
-      Metalsmith(__dirname)
-        .source(build.source)
-        .destination(build.destination)
-        .metadata(metadata)
-        .frontmatter(false) // disabling for frontmatter manipulation later
-        .use(ignore(metadata.config.exclude))
-        .use(renderer.markdown)
-        .use(layouts({
-          "engine": "liquid",
-          "directory": build.directory,
-          "partials": build.partials,
-          "default": "default.html"
-        }))
-        .build(function (err) {
-          if (err) throw err;
-          resolve();
-        });
+      try {
+        Metalsmith(__dirname)
+          .source(path.join(options.base, build.source))
+          .destination(build.destination)
+          .frontmatter(false) // disabling for frontmatter manipulation in renderer
+          .use(ignore(site.config.exclude))
+          .use(renderer({
+            type: 'markdown'
+          }))
+          .use(layout({
+            "directory": path.join(options.base, "layouts"),
+            "template": build.template
+          }))
+          .build(function (err) {
+            if (err) throw err;
+            return resolve();
+          });
+      } catch(e) {
+        console.error(`Error processing build: ${e}`);
+        throw e;
+      }
     });
   }
-};
+}

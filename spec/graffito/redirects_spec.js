@@ -3,7 +3,7 @@ var fs = require("fs"),
 
 describe("Redirects renderer", function() {
   beforeEach(function(done) {
-    this.runBuild(path.join(this.FIXTURES_DIR, "redirects"), function() {
+    this.runBuild("redirects", function() {
       done();
     });
   });

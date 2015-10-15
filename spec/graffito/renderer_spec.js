@@ -2,7 +2,7 @@ var path = require("path");
 
 describe("Simple renderer", function() {
   beforeEach(function(done) {
-    this.runBuild(path.join(this.FIXTURES_DIR, "simple"), function() {
+    this.runBuild("simple", function() {
       done();
     });
   });
@@ -22,11 +22,13 @@ describe("Simple renderer", function() {
   it("should render emoji links", function() {
     expect(this.outfile("emoji", "index.html")).toMatch(this.realfile("simple", "emoji.html"));
   });
+
+  // it should protect against `{% tags %}`
 });
 
 describe("Frontmatter renderer", function() {
   beforeEach(function(done) {
-    this.runBuild(path.join(this.FIXTURES_DIR, "frontmatter"), function() {
+    this.runBuild("frontmatter", function() {
       done();
     });
   });

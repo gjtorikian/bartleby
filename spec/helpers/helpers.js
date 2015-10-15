@@ -18,14 +18,20 @@ beforeEach(function() {
   }
 
   this.runBuild = function(src, callback) {
-    graffito({ base: "spec/fixtures/sample/" }, [
+    graffito({ base: "spec/fixtures/" }, [
       {
         source: src,
         destination: path.join(this.FIXTURES_DIR, "_site"),
-        directory: path.join(this.FIXTURES_DIR, "layouts")
+        template: "default.html"
       }
     ]).then(function (result) {
       return callback();
     });
   };
+
+  this.build = function(build, buildOptions, callback) {
+    graffito(build, buildOptions).then(function(result) {
+      return callback();
+    });
+  }
 });
