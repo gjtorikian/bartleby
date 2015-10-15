@@ -17,6 +17,8 @@ let fs = require("fs"),
     _ = require("lodash");
 
 module.exports = async function(options, buildOptions) {
+  let startTime = new Date();
+
   if (!_.isObject(options)) {
     return new Promise(function(resolve, reject) {
       return reject(new TypeError("Your initial options are not an object!"));
@@ -76,7 +78,14 @@ module.exports = async function(options, buildOptions) {
   }
   debugBuild("End build");
 
-  return new Promise(async function (resolve) {
+  return new Promise(function (resolve) {
+    let endTime = new Date();
+    let timeDiff = endTime - startTime;
+
+    if (!process.env.JASMINE_TEST) {
+      console.log(`Finished in ${timeDiff / 1000}s`);
+    }
+
     return resolve();
   });
 

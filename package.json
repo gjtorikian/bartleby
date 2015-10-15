@@ -26,6 +26,7 @@
     "debug": "DEBUG=graffito* babel-node sample/build.js",
     "personal": "DEBUG=graffito* babel-node dotcom",
     "test": "./node_modules/jasmine-es6/bin/jasmine.js",
+    "test": "JASMINE_TEST=true ./node_modules/jasmine-es6/bin/jasmine.js",
     "lint": "eslint ."
   },
   "devDependencies": {
