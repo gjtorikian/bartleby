@@ -71,6 +71,9 @@ function renderer(options) {
     // This first pass converts the frontmatter variables,
     // and inserts data variables into the body
     let result = await helpers.applyLiquid(contents, pageVars);
+    // This second application renders the previously inserted
+    // data conditionals within the body
+    result = await helpers.applyLiquid(result, pageVars);
 
     let parsed = matter(result);
     let frontmatter = parsed.data;
@@ -87,10 +90,7 @@ function renderer(options) {
     // Apply all frontmatter under the "page" namespace
     files[file].page = frontmatter;
 
-    // This second application renders the previously inserted
-    // data conditionals within the body
-    let body = await helpers.applyLiquid(parsed.content, site.vars());
-    let renderedBody = md.render(body);
+    let renderedBody = md.render(parsed.content);
 
     return new Promise(function(resolve, reject) {
       try {

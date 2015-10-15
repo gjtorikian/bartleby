@@ -15,4 +15,8 @@ describe("Datafiles", function() {
   it("processes conditionals in data files", function() {
     expect(this.outfile("conditional", "index.html")).toEqual(this.realfile("datafiles", "conditional.html"));
   });
+
+  it("processes substituions in substitutions", function() {
+    expect(this.outfile("substitutions", "index.html")).toEqual(this.realfile("datafiles", "substitutions.html"));
+  });
 });

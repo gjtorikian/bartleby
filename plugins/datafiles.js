@@ -35,7 +35,8 @@ module.exports = {
         let dataVars = conrefifier.setupPageVars(config.data_variables, dataPath);
         let yml = await helpers.applyLiquid(contents, dataVars);
 
-        var doc = yaml.safeLoad(yml);
+        var doc = yaml.safeLoad(contents);
+
         let dataKey = `${dataPath}`
           .replace(/^data\//g, "").replace(/\//g, ".").replace(/\.yml/, "");
 

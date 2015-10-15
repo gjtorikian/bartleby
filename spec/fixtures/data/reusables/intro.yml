@@ -1,1 +1,3 @@
 frontmatter_intro: Here I am, in the front.
+
+svn_intro: "We use {{ site.data.reusables.names.new_name }}"
