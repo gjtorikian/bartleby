@@ -13,7 +13,7 @@ describe("Datafiles", function() {
     expect(this.outfile("conditional", "index.html")).toEqual(this.realfile("datafiles", "conditional.html"));
   });
 
-  it("processes substituions in substitutions", function() {
+  it("processes substitutions in substitutions", function() {
     expect(this.outfile("substitutions", "index.html")).toEqual(this.realfile("datafiles", "substitutions.html"));
   });
 });

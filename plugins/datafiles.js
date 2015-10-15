@@ -4,6 +4,7 @@ var fs = require("mz/fs"),
   renderer = require("./renderer"),
   conrefifier = require("./conrefifier"),
   helpers = require("./helpers"),
+  site = require("./site"),
 
   yaml = require("js-yaml"),
   _ = require("lodash");
@@ -33,9 +34,10 @@ module.exports = {
         // Before parsing the yaml, convert any conditionals
         let contents = files[dataPath]
         let dataVars = conrefifier.setupPageVars(config.data_variables, dataPath);
-        let yml = await helpers.applyLiquid(contents, dataVars);
+        dataVars = _.merge(dataVars, site.vars());
 
-        var doc = yaml.safeLoad(contents);
+        contents = await helpers.applyLiquid(contents, dataVars);
+        var doc = yaml.safeLoad(yml);
 
         let dataKey = `${dataPath}`
           .replace(/^data\//g, "").replace(/\//g, ".").replace(/\.yml/, "");
