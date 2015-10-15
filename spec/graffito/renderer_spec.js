@@ -8,19 +8,19 @@ describe("Simple renderer", function() {
   });
 
   it("should render simple Markdown", function() {
-    expect(this.outfile("simple", "index.html")).toMatch(this.realfile("simple", "simple.html"));
+    expect(this.outfile("simple", "index.html")).toEqual(this.realfile("simple", "simple.html"));
   });
 
   it("should render intros", function() {
-    expect(this.outfile("intro", "index.html")).toMatch(this.realfile("simple", "intro.html"));
+    expect(this.outfile("intro", "index.html")).toEqual(this.realfile("simple", "intro.html"));
   });
 
   it("should render header links", function() {
-    expect(this.outfile("headers", "index.html")).toMatch(this.realfile("simple", "headers.html"));
+    expect(this.outfile("headers", "index.html")).toEqual(this.realfile("simple", "headers.html"));
   });
 
   it("should render emoji links", function() {
-    expect(this.outfile("emoji", "index.html")).toMatch(this.realfile("simple", "emoji.html"));
+    expect(this.outfile("emoji", "index.html")).toEqual(this.realfile("simple", "emoji.html"));
   });
 
   // it should protect against `{% tags %}`
