@@ -28,9 +28,11 @@ module.exports = {
       let key = location.slice(location.indexOf("/data/") + 1);
       files[key] = yml;
 
+      // Iterate over each found file
       for (let dataPath of Object.keys(files)) {
+        // Before parsing the yaml, convert any conditionals
         let contents = files[dataPath]
-        let dataVars = conrefifier.setupConfigVars(config, dataPath);
+        let dataVars = conrefifier.setupPageVars(config.data_variables, dataPath);
         let yml = await helpers.applyLiquid(contents, dataVars);
 
         var doc = yaml.safeLoad(yml);

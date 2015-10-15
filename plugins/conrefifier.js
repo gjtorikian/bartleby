@@ -4,14 +4,14 @@ let _ = require("lodash");
  * Methods used to help process conditionals found in data files.
 */
 module.exports = {
-  dataFileVariables: function (config, location) {
+  fileVariables: function (vars, location) {
     // There is no config.yml
-    if (_.isUndefined(config)) {
+    if (_.isUndefined(vars)) {
       return {};
     }
 
     let dataVars = {};
-    let scopes = _.filter(config.data_variables, function (v) {
+    let scopes = _.filter(vars, function (v) {
       return (_.isEmpty(v.scope.path) || new RegExp(v.scope.path).test(location));
     });
 
@@ -22,8 +22,8 @@ module.exports = {
     return dataVars;
   },
 
-  setupConfigVars: function (config, location) {
-    let pageVars = this.dataFileVariables(config, location);
+  setupPageVars: function (vars, location) {
+    let pageVars = this.fileVariables(vars, location);
     let configVars = {
       page: pageVars
     };

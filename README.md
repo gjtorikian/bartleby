@@ -1,10 +1,11 @@
 # graffito
 
-A next generation documentation site.
+A next generation documentation site. This combines a lot of DITA-esque ideas with the relative ease of a markup language.
+
+## Installation
 
 ``` bash
-npm install
-npm run build
+npm install graffito
 ```
 
 ## Data concepts

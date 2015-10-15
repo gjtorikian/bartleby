@@ -5,13 +5,15 @@ let path = require("path"),
   site = require("./site"),
   redirects   = require("./redirects"),
   helpers = require("./helpers"),
+  conrefifier = require("./conrefifier"),
 
   Remarkable = require("remarkable"),
   md = new Remarkable({html: true}),
   toc = require("toc"),
   emojis = require("emojis"),
 
-  matter = require("gray-matter");
+  matter = require("gray-matter"),
+  _ = require("lodash");
 
 const IGNORED_TAG = /`\{[%\{](.+?)[%\}]\}`/g;
 const OPEN_INTRO = /\{\{#intro\}\}/g;
@@ -63,9 +65,12 @@ function renderer(options) {
     contents = applyIntro(contents);
     contents = ignoreTags(contents);
 
+    let pageVars = conrefifier.setupPageVars(site.config.page_variables, file);
+    pageVars = _.merge(site.vars(), pageVars);
+
     // This first pass converts the frontmatter variables,
     // and inserts data variables into the body
-    let result = await helpers.applyLiquid(contents, site.vars());
+    let result = await helpers.applyLiquid(contents, pageVars);
 
     let parsed = matter(result);
     let frontmatter = parsed.data;
@@ -84,7 +89,7 @@ function renderer(options) {
 
     // This second application renders the previously inserted
     // data conditionals within the body
-    let body = await helpers.applyLiquid(parsed.content, site.vars);
+    let body = await helpers.applyLiquid(parsed.content, site.vars());
     let renderedBody = md.render(body);
 
     return new Promise(function(resolve, reject) {

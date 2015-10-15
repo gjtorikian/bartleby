@@ -37,4 +37,8 @@ describe("Frontmatter renderer", function() {
     expect(this.outfile("title", "index.html")).toEqual(this.realfile("frontmatter", "title.html"));
   });
 
+  it("should render audiences in frontmatter", function() {
+    expect(this.outfile("audience", "index.html")).toEqual(this.realfile("frontmatter", "audience.html"));
+    expect(this.outfile("different", "index.html")).toEqual(this.realfile("frontmatter", "different.html"));
+  });
 });
