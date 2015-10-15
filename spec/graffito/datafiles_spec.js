@@ -1,6 +1,3 @@
-var fs = require("fs"),
-    path = require("path");
-
 describe("Datafiles", function() {
   beforeEach(function(done) {
     this.runBuild("datafiles", function() {

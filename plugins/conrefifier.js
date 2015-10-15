@@ -29,5 +29,18 @@ module.exports = {
     };
 
     return configVars;
+  },
+
+  convertVariables: function(config) {
+    if (_.isUndefined(config.config_variables)) {
+      return config;
+    }
+    let variables = config.config_variables;
+    let configString = JSON.stringify(config);
+    _.forEach(variables, function(val, key) {
+      configString = configString.replace(new RegExp(`%{${key}}`, "g"), val);
+    });
+
+    return JSON.parse(configString);
   }
 };

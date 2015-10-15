@@ -1,5 +1,3 @@
-var path = require("path");
-
 describe("Simple renderer", function() {
   beforeEach(function(done) {
     this.runBuild("simple", function() {

@@ -5,6 +5,7 @@ let fs = require("fs"),
     debugBuild = debug("graffito-build"),
     debugData = debug("graffito-data"),
     site = require("./plugins/site"),
+    conrefifier = require("./plugins/conrefifier"),
     datafiles = require("./plugins/datafiles"),
     renderer = require("./plugins/renderer"),
     layout = require("./plugins/layout"),
@@ -48,6 +49,7 @@ module.exports = async function(options, buildOptions) {
   try {
     if (fs.lstatSync(CONFIG_PATH)) {
       site.config = yaml.safeLoad(fs.readFileSync(CONFIG_PATH, "utf8"));
+      site.config = conrefifier.convertVariables(site.config);
     }
   } catch(e) { /* file doesn't exist */ }
 
