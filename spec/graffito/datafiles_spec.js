@@ -2,23 +2,17 @@ var fs = require("fs"),
     path = require("path");
 
 describe("Datafiles", function() {
+  beforeEach(function(done) {
+    this.runBuild("datafiles", function() {
+      done();
+    });
+  });
 
-  // works
-  // doesn't blow up if data file is empty
+  it("doesn't blow up if data file is empty", function() {
+    expect(this.outfile("empty", "index.html")).toEqual(this.realfile("datafiles", "empty.html"));
+  });
 
-  // beforeEach(function(done) {
-  //   this.runBuild(path.join(this.FIXTURES_DIR, "redirects"), function() {
-  //     done();
-  //   });
-  // });
-  //
-  // it("should implement a redirect from page", function() {
-  //   let outfile = fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", "articles", "how-do-i-add-links-to-my-wiki", "index.html"))
-  //   expect(outfile).toMatch(`<meta http-equiv=refresh content="0; url=${this.FIXTURES_DIR}/_site/redirect_from/">`);
-  // });
-  //
-  // it("should implement a redirect to a page", function() {
-  //   let outfile = fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", "redirect_to", "index.html"))
-  //   expect(outfile).toMatch(`<meta http-equiv=refresh content="0; url=https://github.com/capistrano/capistrano/blob/master/README.md">`);
-  // });
+  it("processes conditionals in data files", function() {
+    expect(this.outfile("conditional", "index.html")).toEqual(this.realfile("datafiles", "conditional.html"));
+  });
 });
