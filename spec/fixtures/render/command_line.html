@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+  </title>
+</head>
+<body>
+  <p>If another person has pushed to the same branch as you, Git won't be able to push your changes:</p>
+<pre class="command-line">
+<span class="command">git push origin master</span>
+<span class="output"><span># </span>To https:///<em>USERNAME</em>/<em>REPOSITORY</em>.git</span>
+<span class="output"><span># </span> ! [rejected]        master -> master (non-fast-forward)</span>
+<span class="output"><span># </span>error: failed to push some refs to 'https:///<em>USERNAME</em>/<em>REPOSITORY</em>.git'</span>
+<span class="output"><span># </span>To prevent you from losing history, non-fast-forward updates were rejected</span>
+<span class="output"><span># </span>Merge the remote changes (e.g. 'git pull') before pushing again.  See the</span>
+<span class="output"><span># </span>'Note about fast-forwards' section of 'git push --help' for details.</span>
+</pre>
+<p>You can fix this by <a href="/articles/fetching-a-remote">fetching and merging</a> the changes made on the remote branch with the changes that you have made locally:</p>
+<pre class="command-line">
+<span class="command">git fetch origin</span>
+<span class="comment"># Fetches updates made to an online repository</span>
+<span class="command">git merge origin <em>YOUR_BRANCH_NAME</em></span>
+<span class="comment"># Merges updates made online with your local work</span>
+</pre>
+<p>Or, you can simply use <code>git pull</code> to perform both commands at once:</p>
+<pre class="command-line">
+<span class="command">git pull origin <em>YOUR_BRANCH_NAME</em></span>
+<span class="comment"># Grabs online updates and merges them with your local work</span>
+</pre>
+</body>
+</html>

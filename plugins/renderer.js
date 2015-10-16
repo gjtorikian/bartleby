@@ -70,6 +70,7 @@ function renderer(options) {
 
     // Apply some pre-processing
     contents = applyIntro(contents);
+    contents = applyCommandline(contents);
     contents = ignoreTags(contents);
 
     let pageVars = conrefifier.setupPageVars(site.config.page_variables, file);
@@ -167,6 +168,18 @@ function renderer(options) {
   function applyIntro(text) {
     return text.replace(OPEN_INTRO, "<div class=\"intro\">")
                .replace(CLOSE_INTRO, "</div>");
+  }
+
+  function applyCommandline(text) {
+    return text.replace(/\n?``` command-line([^`]+)```$/gm, function(match) {
+      match = match.replace(/^\s*``` command-line/g, "<pre class=\"command-line\">");
+      match = match.replace(/```/g, "</pre>\n");
+      match = match.replace(/^\$ (.+)$/gm, "<span class=\"command\">$1</span>");
+      match = match.replace(/^(\# .+)$/gm, "<span class=\"comment\">$1</span>");
+      match = match.replace(/^> (.+)$/gm, "<span class=\"output\"><span># </span>$1</span>");
+
+      return match;
+    });
   }
 
   function ignoreTags(text) {

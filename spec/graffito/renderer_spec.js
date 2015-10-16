@@ -1,6 +1,6 @@
 describe("Simple renderer", function() {
   beforeEach(function(done) {
-    this.runBuild("simple", function() {
+    this.runBuild("render", function() {
       done();
     });
   });
@@ -17,6 +17,8 @@ describe("Simple renderer", function() {
     expect(this.outfile("headers", "index.html")).toEqual(this.realfile("render", "headers.html"));
   });
 
+  it("should render command line ", function() {
+    expect(this.outfile("command_line", "index.html")).toEqual(this.realfile("render", "command_line.html"));
   });
 
   it("should render emoji links", function() {
