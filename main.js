@@ -12,6 +12,7 @@ let fs = require("fs"),
 
     Metalsmith = require("metalsmith"),
     ignore = require("metalsmith-ignore"),
+    watch = require("metalsmith-watch"),
     yaml = require("js-yaml"),
     walk = require("walk-promise"),
     _ = require("lodash");
@@ -109,6 +110,16 @@ module.exports = async function(options, buildOptions) {
           "directory": path.join(options.base, "layouts"),
           "template": build.template
         }))
+      if (process.env.JASMINE_TEST != "true") {
+        smith = smith.use(
+                      watch({
+                        paths: {
+                          "${source}/**/*": true
+                        },
+                        livereload: false
+                      })
+                    );
+      }
 
       if (build.plugins) {
         for (let plugin of build.plugins) {

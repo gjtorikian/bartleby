@@ -60,3 +60,7 @@ Returns a Promise.
 ### Redirect_to
 
 ## Plugins
+
+## Watching
+
+is enabled
