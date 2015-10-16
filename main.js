@@ -96,27 +96,33 @@ module.exports = async function(options, buildOptions) {
         return resolve();
       }
 
-      try {
-        Metalsmith(__dirname)
-          .source(path.join(options.base, build.source))
-          .destination(build.destination)
-          .frontmatter(false) // disabling for frontmatter manipulation in renderer
-          .use(ignore(site.config.exclude))
-          .use(renderer({
-            type: 'markdown'
-          }))
-          .use(layout({
-            "directory": path.join(options.base, "layouts"),
-            "template": build.template
-          }))
-          .build(function (err) {
-            if (err) throw err;
-            return resolve();
-          });
-      } catch(e) {
-        console.error(`Error processing build: ${e}`);
-        throw e;
+      let smith = Metalsmith(__dirname)
+        .source(path.join(options.base, build.source))
+        .destination(path.join(options.destination, build.destination))
+        .clean(false)
+        .frontmatter(false) // disabling for frontmatter manipulation in renderer
+        .use(ignore(site.config.exclude))
+        .use(renderer({
+          type: 'markdown'
+        }))
+        .use(layout({
+          "directory": path.join(options.base, "layouts"),
+          "template": build.template
+        }))
+
+      if (build.plugins) {
+        for (let plugin of build.plugins) {
+          smith = smith.use(plugin());
+        }
       }
+
+      smith.build(function (err) {
+          if (err) {
+            console.error(`Error processing build: ${err}`);
+            throw err;
+          }
+          return resolve();
+        });
     });
   }
 }

@@ -23,8 +23,8 @@
   },
   "scripts": {
     "build": "DEBUG=graffito* babel-node main.js",
-    "debug": "DEBUG=graffito* babel-node sample/build.js",
-    "personal": "DEBUG=graffito* babel-node dotcom",
+    "sample": "DEBUG=graffito* babel-node sample/build.js",
+    "debug": "DEBUG=graffito* babel-node dotcom",
     "gulp": "gulp",
     "test": "JASMINE_TEST=true ./node_modules/jasmine-es6/bin/jasmine.js",
     "lint": "eslint ."
@@ -40,7 +40,8 @@
     "gulp-concat": "^2.6.0",
     "gulp-if": "^2.0.0",
     "gulp-sass": "^2.0.4",
-    "jasmine-es6": "^0.0.18"
+    "jasmine-es6": "^0.0.18",
+    "metalsmith-lunr": "^0.2.1",
   },
   "license": "MIT",
   "repository": {

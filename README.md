@@ -50,6 +50,7 @@ Returns a Promise.
 | `destination` | | `` |
 | `directory` | | `` |
 | `partials` | | `` |
+| `plugins` | | `` |
 | `source` | | `` |
 
 ## Redirects
@@ -57,3 +58,5 @@ Returns a Promise.
 ### Redirect_from array
 
 ### Redirect_to
+
+## Plugins
