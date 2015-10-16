@@ -4,7 +4,7 @@ let path = require("path"),
   debugRenderer = debug("graffito-renderer"),
   site = require("./site"),
   redirects   = require("./redirects"),
-  helpers = require("./helpers"),
+  layout = require("./layout"),
   conrefifier = require("./conrefifier"),
 
   Remarkable = require("remarkable"),
@@ -45,6 +45,7 @@ function renderer(options) {
           await processJson(file);
         }
       }
+      site.metadata[source] = files;
     } catch (e) {
       console.error(`Error rendering file: ${e}`);
       throw e;
@@ -76,10 +77,10 @@ function renderer(options) {
 
     // This first pass converts the frontmatter variables,
     // and inserts data variables into the body
-    let result = await helpers.applyLiquid(contents, pageVars);
+    let result = await layout.applyLiquid(contents, pageVars);
     // This second application renders the previously inserted
     // data conditionals within the body
-    result = await helpers.applyLiquid(result, pageVars);
+    result = await layout.applyLiquid(result, pageVars);
 
     let parsed = matter(result);
     let frontmatter = parsed.data;
@@ -108,7 +109,7 @@ function renderer(options) {
         delete files[file];
         files[`${pathname}/index.html`] = fileData;
         files[`${pathname}/index.html`].pathname = pathname;
-        files[[`${pathname}/index.html`]].string_contents = renderedBody;
+        files[`${pathname}/index.html`].string_contents = renderedBody;
 
         return resolve();
       } catch (error) {
@@ -131,7 +132,7 @@ function renderer(options) {
     let pageVars = conrefifier.setupPageVars(site.config.page_variables, file);
     pageVars = { site: site.vars(), page: pageVars };
 
-    let result = await helpers.applyLiquid(contents, pageVars);
+    let result = await layout.applyLiquid(contents, pageVars);
     let parsed = matter(result);
 
     files[file].page = _.merge(pageVars, parsed.data);

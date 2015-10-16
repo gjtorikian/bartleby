@@ -6,14 +6,13 @@ let path = require("path"),
     _ = require("lodash"),
 
     Liquid = require("liquid-node"),
-    engine = new Liquid.Engine(),
+    Engine = new Liquid.Engine(),
 
     site = require("./site"),
     helpers = require("./helpers");
 
-module.exports = layout;
-
 let template = "";
+
 /**
  * Custom class that helps determine locations for partials
  */
@@ -31,7 +30,7 @@ class GraffitoFileSystem extends Liquid.BlankFileSystem {
   }
 }
 
-engine.registerFilters({
+Engine.registerFilters({
   slugify: function(input) {
     if (_.isUndefined(input) || !_.isString(input)) {
       return input;
@@ -42,48 +41,52 @@ engine.registerFilters({
   }
 });
 
-/**
- * Responsible for applying the layout to each piece of content.
- */
-function layout(options) {
-  return async function(files, metalsmith, done) {
-    debugLayout("Start layout");
-    try {
-      engine.fileSystem = new GraffitoFileSystem(options.directory);
-      template = await fs.readFile(path.join(options.directory, options.template), "utf8");
-
-      for (let file of Object.keys(files)) {
-        await processFile(files, file);
-      }
-    } catch (e) {
-      console.error(`Error processing layout: ${e}`);
-      throw e;
-    }
-    debugLayout("End layout");
-
-    done();
-  }
+var self = module.exports = {
+  engine: Engine,
 
   /**
-   * Read the contents of a file and applies the Liquid template to it.
+   * Responsible for applying the layout to each piece of content.
    */
-  async function processFile(files, file) {
-    if (!helpers.check(files, file)) return new Promise(function(resolve) { return resolve(); });
+  layout: function(options) {
+    return async function(files, metalsmith, done) {
+      debugLayout("Start layout");
+      self.engine.fileSystem = new GraffitoFileSystem(options.directory);
+      try {
+        template = await fs.readFile(path.join(options.directory, options.template), "utf8");
 
-    let data = files[file];
-    let contents = data.contents.toString();
-    let vars = { contents: contents, page: data.page, site: site.vars() };
-    let body = await applyLiquid(template, vars);
+        for (let file of Object.keys(files)) {
+          await processFile(files, file);
+        }
+      } catch (e) {
+        console.error(`Error processing layout: ${e}`);
+        throw e;
+      }
+      debugLayout("End layout");
 
-    data.contents = new Buffer(body);
-    return new Promise(function(resolve) { return resolve(); });
+      done();
+    }
+
+    /**
+     * Read the contents of a file and applies the Liquid template to it.
+     */
+    async function processFile(files, file) {
+      if (!helpers.check(files, file)) return new Promise(function(resolve) { return resolve(); });
+
+      let data = files[file];
+      let contents = data.contents.toString();
+      let vars = { contents: contents, page: data.page, site: site.vars() };
+      let body = await self.applyLiquid(template, vars);
+
+      data.contents = new Buffer(body);
+      return new Promise(function(resolve) { return resolve(); });
+    }
+  },
+
+  applyLiquid: function(content, dataVars) {
+    return self.engine
+      .parse(content)
+      .then(function (template) {
+        return template.render(dataVars);
+      });
   }
-
-  function applyLiquid(content, dataVars) {
-   return engine
-     .parse(content)
-     .then(function (template) {
-       return template.render(dataVars);
-     });
-   }
-}
+};

@@ -4,6 +4,7 @@ var fs = require("mz/fs"),
   renderer = require("./renderer"),
   conrefifier = require("./conrefifier"),
   helpers = require("./helpers"),
+  layout = require("./layout"),
   site = require("./site"),
 
   yaml = require("js-yaml"),
@@ -35,7 +36,7 @@ module.exports = {
         let contents = files[dataPath]
         let dataVars = conrefifier.setupPageVars(config.data_variables, dataPath);
         dataVars = { "page": dataVars, "site": site.vars() };
-        contents = await helpers.applyLiquid(contents, dataVars);
+        contents = await layout.applyLiquid(contents, dataVars);
         var doc = yaml.safeLoad(contents);
 
         let dataKey = `${dataPath}`

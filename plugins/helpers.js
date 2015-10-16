@@ -1,6 +1,4 @@
-let utf8 = require("is-utf8"),
-    Liquid = require("liquid-node"),
-    engine = new Liquid.Engine();
+let utf8 = require("is-utf8");
 
 module.exports = {
   /**
@@ -11,14 +9,6 @@ module.exports = {
     for (var i = 0; i < names.length; i++) {
       base = base[names[i]] = i == names.length - 1 ? final_value : (base[names[i]] || {});
     }
-  },
-
-  applyLiquid: function(content, dataVars) {
-    return engine
-      .parse(content)
-      .then(function (template) {
-        return template.render(dataVars);
-      });
   },
 
   check: function(files, file) {

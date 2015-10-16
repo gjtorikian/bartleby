@@ -8,7 +8,7 @@ let fs = require("fs"),
     conrefifier = require("./plugins/conrefifier"),
     datafiles = require("./plugins/datafiles"),
     renderer = require("./plugins/renderer"),
-    layout = require("./plugins/layout"),
+    layout = require("./plugins/layout").layout,
 
     Metalsmith = require("metalsmith"),
     ignore = require("metalsmith-ignore"),
