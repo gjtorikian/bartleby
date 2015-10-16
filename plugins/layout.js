@@ -72,7 +72,7 @@ function layout(options) {
 
     let data = files[file];
     let contents = data.contents.toString();
-    let vars = _.merge({ contents: contents, page: data.page }, site.vars());
+    let vars = { contents: contents, page: data.page, site: site.vars() };
     let body = await applyLiquid(template, vars);
 
     data.contents = new Buffer(body);

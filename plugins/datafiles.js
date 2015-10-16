@@ -34,8 +34,7 @@ module.exports = {
         // Before parsing the yaml, convert any conditionals
         let contents = files[dataPath]
         let dataVars = conrefifier.setupPageVars(config.data_variables, dataPath);
-        dataVars = _.merge(dataVars, site.vars());
-
+        dataVars = { "page": dataVars, "site": site.vars() };
         contents = await helpers.applyLiquid(contents, dataVars);
         var doc = yaml.safeLoad(contents);
 

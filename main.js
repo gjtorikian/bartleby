@@ -57,17 +57,19 @@ module.exports = async function(options, buildOptions) {
   } catch(e) { /* file doesn't exist */ }
 
   // Next, iterate on the data folder, picking up YML files
-  const DATA_PATH = path.join(options.base, "data");
-  debugData("Start data");
-  try {
-    if (fs.lstatSync(DATA_PATH)) {
-      let dataFiles = await walk(DATA_PATH);
-      for (let dataFile of dataFiles) {
-        await datafiles.process(site.config, dataFile);
+  if (process.env.SKIP_DATA != "true") {
+    const DATA_PATH = path.join(options.base, "data");
+    debugData("Start data");
+    try {
+      if (fs.lstatSync(DATA_PATH)) {
+        let dataFiles = await walk(DATA_PATH);
+        for (let dataFile of dataFiles) {
+          await datafiles.process(site.config, dataFile);
+        }
       }
-    }
-  } catch(e) { /* directory doesn't exist */ }
-  debugData("End data");
+    } catch(e) { /* directory doesn't exist */ }
+    debugData("End data");
+  }
 
   // Store data files at the site level
   site.data = datafiles.data;
@@ -109,7 +111,8 @@ module.exports = async function(options, buildOptions) {
         .use(layout({
           "directory": path.join(options.base, "layouts"),
           "template": build.template
-        }))
+        }));
+
       if (process.env.JASMINE_TEST != "true") {
         smith = smith.use(
                       watch({

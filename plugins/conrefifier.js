@@ -24,11 +24,8 @@ module.exports = {
 
   setupPageVars: function (vars, location) {
     let pageVars = this.fileVariables(vars, location);
-    let configVars = {
-      page: pageVars
-    };
 
-    return configVars;
+    return pageVars;
   },
 
   convertVariables: function(config) {
