@@ -1,11 +1,13 @@
 var path = require("path"),
     fs = require("fs"),
 
+    rimraf = require("rimraf"),
     graffito = require("../../main"),
     _  = require("lodash");
 
 beforeEach(function() {
   this.FIXTURES_DIR = path.join(__dirname, "..", "fixtures");
+  rimraf.sync(path.join(this.FIXTURES_DIR, "_site"));
 
   this.outfile = function(dirname, filename) {
     var outfile = _.trim(fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", dirname, filename), "utf8"));
@@ -18,10 +20,10 @@ beforeEach(function() {
   }
 
   this.runBuild = function(src, callback) {
-    graffito({ base: "spec/fixtures/" }, [
+    graffito({ base: "spec/fixtures/", destination: "spec/fixtures/_site/" }, [
       {
         source: src,
-        destination: path.join(this.FIXTURES_DIR, "_site"),
+        destination: "",
         template: "default.html"
       }
     ]).then(function (result) {

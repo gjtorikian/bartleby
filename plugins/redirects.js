@@ -32,14 +32,8 @@ var self = module.exports = {
 
   createRedirectTo: async function (metalsmith, files, file, redirect) {
     try {
-      let splitPath = metalsmith._destination.split(path.sep);
-      let paths = splitPath.splice(0, 1);
-      paths.push(splitPath.join(path.sep));
-
       let basename = path.basename(file, ".md");
-      let dest = `${path.sep}${paths[1]}${path.sep}${basename}/`;
-
-      files[`${dest}/index.html`] = { contents: self.redirectPage(redirect) };
+      files[`${basename}/index.html`] = { contents: self.redirectPage(redirect) };
     } catch (e) {
       console.error(`Error generating redirect_to: ${e}`);
       reject(e);

@@ -10,7 +10,7 @@ describe("Redirects renderer", function() {
 
   it("should implement a redirect from page", function() {
     let outfile = fs.readFileSync(path.join(this.FIXTURES_DIR, "_site", "articles", "how-do-i-add-links-to-my-wiki", "index.html"))
-    expect(outfile).toMatch(`<meta http-equiv=refresh content="0; url=${this.FIXTURES_DIR}/_site/redirect_from/">`);
+    expect(outfile).toMatch(`<meta http-equiv=refresh content="0; url=/fixtures/_site//redirect_from/">`);
   });
 
   it("should implement a redirect to a page", function() {
