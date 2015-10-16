@@ -42,6 +42,7 @@
     "gulp-sass": "^2.0.4",
     "jasmine-es6": "^0.0.18",
     "metalsmith-lunr": "^0.2.1",
+    "rimraf": "^2.4.3"
   },
   "license": "MIT",
   "repository": {

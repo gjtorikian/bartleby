@@ -31,6 +31,17 @@ class GraffitoFileSystem extends Liquid.BlankFileSystem {
   }
 }
 
+engine.registerFilters({
+  slugify: function(input) {
+    if (_.isUndefined(input) || !_.isString(input)) {
+      return input;
+    }
+    let str = input.toLowerCase();
+    return str.replace(/[^a-z0-9]+/ig, "-")
+              .replace(/^\-|\-$/ig, "");
+  }
+});
+
 /**
  * Responsible for applying the layout to each piece of content.
  */
