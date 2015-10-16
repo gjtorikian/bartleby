@@ -37,7 +37,7 @@ module.exports = {
         dataVars = _.merge(dataVars, site.vars());
 
         contents = await helpers.applyLiquid(contents, dataVars);
-        var doc = yaml.safeLoad(yml);
+        var doc = yaml.safeLoad(contents);
 
         let dataKey = `${dataPath}`
           .replace(/^data\//g, "").replace(/\//g, ".").replace(/\.yml/, "");
