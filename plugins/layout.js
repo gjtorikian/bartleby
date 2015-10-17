@@ -2,7 +2,7 @@ let path = require("path"),
     fs = require("mz/fs"),
 
     debug = require("debug"),
-    debugLayout = debug("graffito-layout"),
+    debugLayout = debug("bartleby-layout"),
     _ = require("lodash"),
 
     Liquid = require("liquid-node"),
@@ -16,7 +16,7 @@ let template = "";
 /**
  * Custom class that helps determine locations for partials
  */
-class GraffitoFileSystem extends Liquid.BlankFileSystem {
+class BartlebyFileSystem extends Liquid.BlankFileSystem {
   constructor(base) {
     super();
     this.base = base;
@@ -50,7 +50,7 @@ var self = module.exports = {
   layout: function(options) {
     return async function(files, metalsmith, done) {
       debugLayout("Start layout");
-      self.engine.fileSystem = new GraffitoFileSystem(options.directory);
+      self.engine.fileSystem = new BartlebyFileSystem(options.directory);
       try {
         template = await fs.readFile(path.join(options.directory, options.template), "utf8");
 

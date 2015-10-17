@@ -1,5 +1,5 @@
 {
-  "name": "graffito",
+  "name": "bartleby",
   "version": "0.0.1",
   "author": {
     "name": "Garen J. Torikian"
@@ -23,9 +23,9 @@
     "walk-promise": "^0.1.0"
   },
   "scripts": {
-    "build": "DEBUG=graffito* babel-node main.js",
-    "sample": "DEBUG=graffito* babel-node sample/build.js",
-    "debug": "DEBUG=graffito* babel-node dotcom",
+    "build": "DEBUG=bartleby* babel-node main.js",
+    "sample": "DEBUG=bartleby* babel-node sample/build.js",
+    "debug": "DEBUG=bartleby* babel-node dotcom",
     "gulp": "gulp",
     "test": "JASMINE_TEST=true ./node_modules/jasmine-es6/bin/jasmine.js",
     "lint": "eslint ."
@@ -48,6 +48,6 @@
   "license": "MIT",
   "repository": {
     "type" : "git",
-    "url" : "https://github.com/gjtorikian/graffito.git"
+    "url" : "https://github.com/gjtorikian/bartleby.git"
   }
 }

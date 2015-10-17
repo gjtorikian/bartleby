@@ -2,7 +2,7 @@ var path = require("path"),
     fs = require("fs"),
 
     rimraf = require("rimraf"),
-    graffito = require("../../main"),
+    bartleby = require("../../main"),
     _  = require("lodash");
 
 beforeEach(function() {
@@ -20,7 +20,7 @@ beforeEach(function() {
   }
 
   this.runBuild = function(src, callback) {
-    graffito({ base: "spec/fixtures/", destination: "spec/fixtures/_site/" }, [
+    bartleby({ base: "spec/fixtures/", destination: "spec/fixtures/_site/" }, [
       {
         source: src,
         destination: "",
@@ -32,7 +32,7 @@ beforeEach(function() {
   };
 
   this.build = function(build, buildOptions, callback) {
-    graffito(build, buildOptions).then(function(result) {
+    bartleby(build, buildOptions).then(function(result) {
       return callback();
     });
   }

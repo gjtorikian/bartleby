@@ -2,8 +2,8 @@ let fs = require("fs"),
     path = require("path"),
 
     debug = require("debug"),
-    debugBuild = debug("graffito-build"),
-    debugData = debug("graffito-data"),
+    debugBuild = debug("bartleby-build"),
+    debugData = debug("bartleby-data"),
     site = require("./plugins/site"),
     conrefifier = require("./plugins/conrefifier"),
     datafiles = require("./plugins/datafiles"),
@@ -46,7 +46,7 @@ module.exports = async function(options, buildOptions) {
     });
   }
 
-  const CONFIG_PATH = path.join(options.base, "_graffito.yml");
+  const CONFIG_PATH = path.join(options.base, "_bartleby.yml");
   site.config = {};
   // First, parse the main site config data
   try {

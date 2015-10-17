@@ -1,6 +1,6 @@
-var graffito = require("../main");
+var bartleby = require("../main");
 
-graffito({
+bartleby({
   base: "spec/fixtures/sample/",
   destination: "_site"
 }, [

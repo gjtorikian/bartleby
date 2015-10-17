@@ -1,11 +1,11 @@
-# graffito
+# bartleby
 
 A next generation documentation site. This combines a lot of DITA-esque ideas with the relative ease of a markup language.
 
 ## Installation
 
 ``` bash
-npm install graffito
+npm install bartleby
 ```
 
 ## Data concepts
@@ -22,9 +22,9 @@ npm install graffito
 ## Usage
 
 ``` javascript
-var graffito = require('graffito')
+var bartleby = require('bartleby')
 
-graffito([{
+bartleby([{
     source: "spec/fixtures/sample/content/dotcom/articles",
     destination: "_site/articles",
     directory: "spec/fixtures/sample/layouts",

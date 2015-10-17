@@ -1,7 +1,7 @@
 let path = require("path"),
 
   debug = require("debug"),
-  debugRenderer = debug("graffito-renderer"),
+  debugRenderer = debug("bartleby-renderer"),
   site = require("./site"),
   redirects   = require("./redirects"),
   layout = require("./layout"),
