@@ -24,7 +24,8 @@ beforeEach(function() {
       {
         source: src,
         destination: "",
-        template: "default.html"
+        template: "default.html",
+        navigation: "data.categories.category"
       }
     ]).then(function (result) {
       return callback();

@@ -6,6 +6,7 @@ let path = require("path"),
   redirects   = require("./redirects"),
   layout = require("./layout"),
   conrefifier = require("./conrefifier"),
+  helpers = require("./helpers"),
 
   Remarkable = require("remarkable"),
   md = new Remarkable({html: true}),
@@ -112,6 +113,10 @@ function renderer(options) {
         files[`${pathname}/index.html`].pathname = pathname;
         files[`${pathname}/index.html`].string_contents = renderedBody;
 
+        if (options.build.navigation) {
+          files[`${pathname}/index.html`].page.parents = findParents(fileData.page.title, options.build.navigation);
+        }
+
         return resolve();
       } catch (error) {
         console.error(`Error while processing Markdown ${file}: ${error}`);
@@ -151,6 +156,24 @@ function renderer(options) {
         return reject(error);
       }
     });
+  }
+
+  function findParents(title, navigation) {
+    let siteVars = site.vars();
+    let dataFileContents = helpers.fetchNestedObject(siteVars, navigation);
+    let parents = _.findKey(dataFileContents, function(o) {
+      if (_.isObject(o[0])) {
+        let category = Object.keys(o[0])[0];
+        if (_.includes(o[0][category], title)) {
+          return category;
+        }
+      }
+      else {
+        return _.includes(o, title);
+      }
+    });
+
+    return parents;
   }
 
   function createRedirects(file, frontmatterKey, frontmatterValue) {

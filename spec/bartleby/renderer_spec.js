@@ -44,3 +44,19 @@ describe("Frontmatter renderer", function() {
     expect(this.outfile("different", "index.html")).toEqual(this.realfile("frontmatter", "different.html"));
   });
 });
+
+describe("Parents renderer", function() {
+  beforeEach(function(done) {
+    this.runBuild("parents", function() {
+      done();
+    });
+  });
+
+  it("should render category for a single parent", function() {
+    expect(this.outfile("single_parent", "index.html")).toEqual(this.realfile("parents", "single_parent.html"));
+  });
+
+  it("should render category for a single parent", function() {
+    expect(this.outfile("two_parents", "index.html")).toEqual(this.realfile("parents", "two_parents.html"));
+  });
+});

@@ -52,6 +52,7 @@ Returns a Promise.
 | `partials` | | `` |
 | `plugins` | | `` |
 | `source` | | `` |
+| `navigation` | | `` |
 
 ## Redirects
 

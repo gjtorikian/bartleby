@@ -106,7 +106,8 @@ module.exports = async function(options, buildOptions) {
         .frontmatter(false) // disabling for frontmatter manipulation in renderer
         .use(ignore(site.config.exclude))
         .use(renderer({
-          type: 'markdown'
+          type: 'markdown',
+          build: build
         }))
         .use(layout({
           "directory": path.join(options.base, "layouts"),
